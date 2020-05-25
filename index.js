@@ -78,6 +78,28 @@ class Tree {
 		this.root.isHidden = false;
 	}
 
+	//Метод закрытия папки по указанному пути
+	hideFolder(path) {
+
+		//Помимо закрытия самой папки рекурсивное закрытие всех внутренних
+		function closeAllFoldersInThisFolder(folder) {
+			for(let child of folder.childs) {
+				if(child instanceof Folder) {
+					closeAllFoldersInThisFolder(child);
+				}
+			}
+			folder.close();
+		}
+
+		const targetFolder = this.findFolder(this.root, path.split('/'));
+		closeAllFoldersInThisFolder(targetFolder);
+	}
+
+	openFolder(path) {
+		const targetFolder = this.findFolder(this.root, path.split('/'));
+		targetFolder.open();
+	}
+
 	//Функция поиска папки по пути, разбитому на компоненты
 	findFolder(actualNode, actualPathItems) {
 		try {
