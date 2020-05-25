@@ -78,6 +78,39 @@ class Tree {
 		this.root.isHidden = false;
 	}
 
+	//Метод добавления файла по указанному пути
+	addFileWithPath(path) {
+
+		//Проверка на несовпадение имени создаваемого файла с уже существующими
+		function isUnique(folder, name) {
+			try{
+				const coincidences = folder.childs.filter(value => name === value.name);
+				if(coincidences.length > 0)
+					throw new FileWorkError('File with the same name already exists');
+				else
+					return true;
+
+				//при возбуждении ошибки функция вернет undefined -> аналогично false
+			} catch(e) {
+				if(e.name === 'FileWorkError')
+					alert(e.message);
+				else
+					throw e;
+			}
+
+		}
+
+		//Массив будет соответствовать пути без имени файла.
+		//т.к. реализована функция поиска нужной директории
+		const pathArray = [...path.split('/')];
+		const nameOfFile = pathArray.pop();
+
+		const searchedFolder = this.findFolder(this.root, pathArray);
+		if(searchedFolder && isUnique(searchedFolder, nameOfFile)) {
+			searchedFolder.addChild(nameOfFile, TYPE_FILE);
+		}
+	}
+
 	//Функция поиска папки по пути, разбитому на компоненты
 	findFolder(actualNode, actualPathItems) {
 		try {
